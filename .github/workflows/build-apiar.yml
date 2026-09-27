@@ -16,7 +16,7 @@ on:
       tag:
         description: 'Image tag, e.g. 3.0.0-beta.583-apiar1'
         required: true
-        default: '3.0.0-beta.583-apiar1'
+        default: '3.0.0-beta.583-apiar2'
       version:
         description: 'The upstream version this branch is based on'
         required: true
@@ -44,7 +44,7 @@ jobs:
       - name: Set Build Variables
         run: |
           echo "REL_VERSION=${{ inputs.version || '3.0.0-beta.583' }}" >> $GITHUB_ENV
-          echo "IMAGE_TAG=${{ inputs.tag || '3.0.0-beta.583-apiar1' }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ inputs.tag || '3.0.0-beta.583-apiar2' }}" >> $GITHUB_ENV
 
       - name: Set Version
         run: |

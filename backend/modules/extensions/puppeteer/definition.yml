@@ -17,4 +17,11 @@ architectures:
 isInstallable: true
 # The version installed, here rather than in `package.json` for the reason above. The Docker image
 # reads this same line, so an image and a hand-installed instance agree on what Puppeteer is.
-installVersion: 25.4.0
+#
+# It has to match the Chromium it drives. Puppeteer speaks the CDP of one Chrome build - its
+# `PUPPETEER_REVISIONS.chrome` - and the image installs Debian's `chromium` package, which moves on its
+# own. 25.4.0 names 151.0.7922.47; trixie now ships 154.0.8037.57, and that pair fails every render
+# with `Requesting main frame too early!` from `page.goto`. 25.12.0 names 154.0.8037.57 exactly.
+#
+# Check `PUPPETEER_REVISIONS` against `chromium --version` in the image whenever either moves.
+installVersion: 25.12.0
