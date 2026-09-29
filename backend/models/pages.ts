@@ -3206,8 +3206,19 @@ class Pages {
             description,
             content,
             tags,
-            publishState: isPublished === false ? 'draft' : 'published',
-            render: ''
+            publishState: isPublished === false ? 'draft' : 'published'
+            /*
+              No `render` key at all, where this blanked it. `updatePage` leaves the stored HTML alone
+              for a patch that does not carry one, and the queued render below replaces it — together
+              with the toc and the search text, in `storeRender` — as soon as the browser has been
+              through the new source. The window between the two now shows the previous version of the
+              page rather than nothing.
+
+              That window is not reliably seconds long. A render that throws is logged and dropped,
+              and the page is never re-queued (`models/rendering.ts`), so blanking here turned one
+              failed render into an article with no body at all — the source intact, every screen
+              reporting success, and nothing for the reader to fall back to.
+            */
           } as Partial<PageInput>,
           actor
         )
