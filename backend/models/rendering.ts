@@ -1011,6 +1011,7 @@ class Rendering {
     }
 
     let renderer: PageRenderer | null = null
+    let failed = 0
     try {
       while (true) {
         /*
@@ -1063,13 +1064,30 @@ class Rendering {
           })
           WIKI.logger.debug(`Rendered page ${page.id} (${page.path}) from its source.`)
         } catch (err: any) {
-          WIKI.logger.warn(`Failed to render page ${entry.pageId}: ${err.message}`)
+          /*
+            Error rather than warning, and said in full, because this line is the only trace a dropped
+            render leaves anywhere. The page keeps the HTML it had — nothing at all for one that has
+            never rendered — the drain moves on to the next row and reports itself completed, the
+            scheduler's failed list stays empty, and the page answers 200 with its title and its
+            source. Nothing else in the product will tell an administrator that an article went blank.
+          */
+          failed += 1
+          WIKI.logger.error(
+            `Failed to render page ${entry.pageId}: ${err.message}. It keeps the HTML it had and is not re-queued.`
+          )
           await this.discardRenderer(renderer)
           renderer = null
         }
       }
     } finally {
       await this.discardRenderer(renderer)
+      if (failed > 0) {
+        // -> The drain's own result is `Completed` either way, since the queue did drain. The count is
+        //    what makes a bad batch visible without reading every line of the log for it.
+        WIKI.logger.error(
+          `Render queue drained with ${failed} page(s) left unrendered — re-render them from Page Actions.`
+        )
+      }
     }
   }
 
