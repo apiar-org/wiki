@@ -16,7 +16,7 @@ on:
       tag:
         description: 'Image tag, e.g. 3.0.0-beta.583-apiar1'
         required: true
-        default: '3.0.0-beta.583-apiar2'
+        default: '3.0.0-beta.583-apiar3'
       version:
         description: 'The upstream version this branch is based on'
         required: true
@@ -44,7 +44,7 @@ jobs:
       - name: Set Build Variables
         run: |
           echo "REL_VERSION=${{ inputs.version || '3.0.0-beta.583' }}" >> $GITHUB_ENV
-          echo "IMAGE_TAG=${{ inputs.tag || '3.0.0-beta.583-apiar2' }}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ inputs.tag || '3.0.0-beta.583-apiar3' }}" >> $GITHUB_ENV
 
       - name: Set Version
         run: |
@@ -83,6 +83,6 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }}
           labels: |
             org.opencontainers.image.title=Wiki.js (Apiar patch)
-            org.opencontainers.image.description=Wiki.js ${{ env.REL_VERSION }} with the storage import fix
+            org.opencontainers.image.description=Wiki.js ${{ env.REL_VERSION }} with the storage import and render-drop fixes
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
